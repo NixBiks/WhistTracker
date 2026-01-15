@@ -51,7 +51,7 @@ export default function Home() {
               {activeGames.map((game) => (
                 <Link
                   key={game.id}
-                  href={`/game/${game.id}`}
+                  href={`/game?id=${game.id}`}
                   className="block card-container p-5 hover:bg-[#FDF6E3] transition-colors"
                 >
                   <div className="flex justify-between items-center">
@@ -222,7 +222,7 @@ export default function Home() {
                         </div>
                         <div className="flex gap-3">
                           <Link
-                            href={`/game/${game.id}`}
+                            href={`/game?id=${game.id}`}
                             className="text-[#6B3A3A] hover:text-[#D4A5A5] text-sm"
                             style={{ fontFamily: "'Playfair Display', Georgia, serif" }}
                           >

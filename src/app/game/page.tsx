@@ -1,23 +1,20 @@
 'use client';
 
-import { use } from 'react';
-import { useRouter } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { Suspense } from 'react';
 import { useGame } from '@/contexts/GameContext';
 import Navigation from '@/components/Navigation';
 import RoundForm from '@/components/RoundForm';
 import ScoreTable from '@/components/ScoreTable';
 import RoundHistory from '@/components/RoundHistory';
 
-interface GamePageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default function GamePage({ params }: GamePageProps) {
-  const { id } = use(params);
+function GameContent() {
+  const searchParams = useSearchParams();
   const router = useRouter();
   const { state, endGameNight, getPlayerName } = useGame();
 
-  const game = state.gameNights.find((g) => g.id === id);
+  const id = searchParams.get('id');
+  const game = id ? state.gameNights.find((g) => g.id === id) : null;
 
   if (!game) {
     return (
@@ -71,7 +68,7 @@ export default function GamePage({ params }: GamePageProps) {
               })}
             </h1>
             <p className="text-[#5C4033] opacity-70 mt-1">
-              {game.players.map((id) => getPlayerName(id)).join(', ')}
+              {game.players.map((pid) => getPlayerName(pid)).join(', ')}
             </p>
           </div>
           {game.isActive && (
@@ -108,5 +105,22 @@ export default function GamePage({ params }: GamePageProps) {
         )}
       </main>
     </div>
+  );
+}
+
+export default function GamePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[var(--background)]">
+        <Navigation />
+        <main className="max-w-4xl mx-auto px-4 py-8">
+          <div className="card-container p-12 text-center">
+            <div className="text-[#D4C5B0] text-4xl animate-pulse">♠ ♥ ♦ ♣</div>
+          </div>
+        </main>
+      </div>
+    }>
+      <GameContent />
+    </Suspense>
   );
 }
